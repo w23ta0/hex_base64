@@ -33,7 +33,7 @@ class MyFrame1 ( wx.Frame ):
         self.m_staticText2.Wrap( -1 )
         bSizer1.Add( self.m_staticText2, 0, wx.ALL, 5 )
 
-        self.m_textCtrl1 = wx.TextCtrl( self, wx.ID_ANY, wx.EmptyString, wx.DefaultPosition, wx.DefaultSize, 0 )
+        self.m_textCtrl1 = wx.TextCtrl( self, wx.ID_ANY, wx.EmptyString, wx.DefaultPosition, wx.DefaultSize, wx.TE_MULTILINE )
         bSizer1.Add( self.m_textCtrl1, 1, wx.ALL|wx.EXPAND|wx.ALIGN_CENTER_HORIZONTAL, 5 )
 
         self.m_staticline1 = wx.StaticLine( self, wx.ID_ANY, wx.DefaultPosition, wx.DefaultSize, wx.LI_HORIZONTAL )
@@ -43,7 +43,7 @@ class MyFrame1 ( wx.Frame ):
         self.m_staticText3.Wrap( -1 )
         bSizer1.Add( self.m_staticText3, 0, wx.ALL, 5 )
 
-        self.m_textCtrl2 = wx.TextCtrl( self, wx.ID_ANY, wx.EmptyString, wx.DefaultPosition, wx.DefaultSize, 0 )
+        self.m_textCtrl2 = wx.TextCtrl( self, wx.ID_ANY, wx.EmptyString, wx.DefaultPosition, wx.DefaultSize, wx.TE_MULTILINE )
         bSizer1.Add( self.m_textCtrl2, 1, wx.ALL|wx.EXPAND|wx.ALIGN_CENTER_HORIZONTAL, 5 )
 
         gbSizer1 = wx.GridBagSizer( 0, 0 )
@@ -87,19 +87,31 @@ class MyFrame1 ( wx.Frame ):
     def m_button1OnButtonClick( self, event ):
         event.Skip()
         input=self.m_textCtrl1.GetValue()
-        a=base64.b64encode(input)
-        b=a.encode("hex")
-        self.m_textCtrl2.SetValue(b)
+        list=input.splitlines()
+        secret=[]
+        l=len(list)
+        for i in range(0, l, +1):
+            pw = list[i]
+            b = pw.encode('base64').encode('hex')
+            secret.append(b)
+
+        se = '\n'.join(secret)
+        self.m_textCtrl2.SetValue(se)
 
 
     def m_button2OnButtonClick( self, event ):
         event.Skip()
         input=self.m_textCtrl1.GetValue()
-        a1=input.decode("hex")
-        b1=base64.b64decode(a1)
-        self.m_textCtrl2.SetValue(b1)
+        list=input.splitlines()
+        secret=[]
+        l=len(list)
+        for i in range(0, l, +1):
+            pw = list[i]
+            b = pw.decode('hex').decode('base64')
+            secret.append(b)
 
-
+        se = '\n'.join(secret)
+        self.m_textCtrl2.SetValue(se)
 
 class App(wx.App):
     def OnInit(self):
@@ -109,11 +121,3 @@ class App(wx.App):
 if __name__ == '__main__':
     app = App()
     app.MainLoop()
-
-#b='5833524a5a575a6d626d3130566d56744e476c334f48343d0a'
-#a1=b.decode("hex")
-#b1=base64.b64decode(a1)
-#print a1
-#print b1
-
-
